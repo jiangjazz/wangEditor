@@ -2,8 +2,12 @@
 # wangEditor_modify
 
 ## 修改
+```
+m1.0.1
+- 修改了link图标为class w-jzc-icon-link （需自行添加对应图标）
+m1.0.0
 - 添加了一个自定义按钮 enclosure，触发自定义方法 enclosureClick。
-
+```
 
 ## 介绍
 

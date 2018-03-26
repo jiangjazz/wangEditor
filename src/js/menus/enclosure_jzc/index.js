@@ -3,7 +3,7 @@
  * @Author: Janzen 
  * @Date: 2018-03-26 14:15:52 
  * @Last Modified by: Janzen
- * @Last Modified time: 2018-03-26 15:22:20
+ * @Last Modified time: 2018-03-26 16:17:23
  */
 /**
  * jzc
@@ -16,7 +16,7 @@ function Enclosure(editor) {
   this.editor = editor
   this.$elem = $(
     `<div class="w-e-menu">
-      <i class="w-e-icon-enclosure"><i/>
+      <i class="w-e-icon-link"><i/>
     </div>`
   )
   this.type = 'custom'
