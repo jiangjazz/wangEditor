@@ -1,4 +1,10 @@
 /*
+ * @Author: Janzen 
+ * @Date: 2018-03-26 14:29:26 
+ * @Last Modified by: Janzen
+ * @Last Modified time: 2018-03-26 15:18:37
+ */
+/*
     菜单集合
 */
 import { objForEach } from '../util/util.js'
@@ -102,6 +108,19 @@ Menus.prototype = {
                     if (editor.selection.getRange() == null) {
                         return
                     }
+                    // 在自定义事件中显示 panel
+                    menu.onClick(e)
+                })
+            }
+
+            /**
+             * jzc扩展
+             * 自定义组件触发外部事件
+             */
+            if (type === 'custom' && menu.onClick) {
+                console.log('这是扩展的自定义事件')
+                $elem.on('click', e => {
+                    e.stopPropagation()
                     // 在自定义事件中显示 panel
                     menu.onClick(e)
                 })

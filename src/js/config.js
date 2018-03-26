@@ -25,7 +25,9 @@ const config = {
         'video',
         'code',
         'undo',
-        'redo'
+        'redo',
+        // jzc add
+        'enclosure'
     ],
 
     fontNames: [

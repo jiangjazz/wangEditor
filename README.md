@@ -1,5 +1,9 @@
 
-# wangEditor
+# wangEditor_modify
+
+## 修改
+- 添加了一个自定义按钮 enclosure，触发自定义方法 enclosureClick。
+
 
 ## 介绍
 

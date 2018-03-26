@@ -65,5 +65,9 @@ MenuConstructors.video = Video
 import Image from './img/index.js'
 MenuConstructors.image = Image
 
+// jzc
+import Enclosure from './enclosure_jzc/index.js'
+MenuConstructors.enclosure = Enclosure
+
 // 吐出所有菜单集合
 export default MenuConstructors
