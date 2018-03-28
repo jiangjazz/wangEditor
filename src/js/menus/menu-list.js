@@ -69,5 +69,8 @@ MenuConstructors.image = Image
 import Enclosure from './enclosure_jzc/index.js'
 MenuConstructors.enclosure = Enclosure
 
+import Hidden from './hidden_jzc/index.js'
+MenuConstructors.hidden = Hidden
+
 // 吐出所有菜单集合
 export default MenuConstructors

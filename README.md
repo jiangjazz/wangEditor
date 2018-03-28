@@ -3,6 +3,8 @@
 
 ## 修改
 ```
+m1.0.2
+- 添加了一个自定义按钮 hidden，触发自定义方法 hiddenClick
 m1.0.1
 - 修改了link图标为class w-jzc-icon-link （需自行添加对应图标）
 m1.0.0

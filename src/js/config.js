@@ -27,7 +27,8 @@ const config = {
         'undo',
         'redo',
         // jzc add
-        'enclosure'
+        'enclosure',
+        'hidden'
     ],
 
     fontNames: [

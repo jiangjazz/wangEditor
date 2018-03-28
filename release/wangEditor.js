@@ -547,7 +547,7 @@ var config = {
     // 默认菜单配置
     menus: ['head', 'bold', 'fontSize', 'fontName', 'italic', 'underline', 'strikeThrough', 'foreColor', 'backColor', 'link', 'list', 'justify', 'quote', 'emoticon', 'image', 'table', 'video', 'code', 'undo', 'redo',
     // jzc add
-    'enclosure'],
+    'enclosure', 'hidden'],
 
     fontNames: ['宋体', '微软雅黑', 'Arial', 'Tahoma', 'Verdana'],
 
@@ -2889,6 +2889,43 @@ Enclosure.prototype = {
   }
 };
 
+/* eslint-disable */
+/*
+ * @Author: Janzen 
+ * @Date: 2018-03-26 14:15:52 
+ * @Last Modified by: Janzen
+ * @Last Modified time: 2018-03-28 09:37:39
+ */
+/**
+ * jzc
+ * hidden
+ */
+// 构造函数
+function Hidden(editor) {
+  this.editor = editor;
+  this.$elem = $('<div class="w-e-menu">\n      <i class="w-jzc-icon-hidden"><i/>\n    </div>');
+  this.type = 'custom';
+
+  // click action
+  this._clickAction = function () {};
+
+  // 当前是否 active 状态
+  this._active = false;
+}
+
+// 原型
+Hidden.prototype = {
+  constructor: Hidden,
+
+  // 点击事件
+  onClick: function onClick(e) {
+    // 点击菜单将触发这里
+    var editor = this.editor;
+    var hiddenClick = editor.hiddenClick || this._clickAction;
+    hiddenClick();
+  }
+};
+
 /*
     所有菜单的汇总
 */
@@ -2938,6 +2975,8 @@ MenuConstructors.image = Image;
 
 // jzc
 MenuConstructors.enclosure = Enclosure;
+
+MenuConstructors.hidden = Hidden;
 
 /*
  * @Author: Janzen 
