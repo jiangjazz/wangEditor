@@ -11,6 +11,11 @@ m1.0.0
 - 添加了一个自定义按钮 enclosure，触发自定义方法 enclosureClick。
 ```
 
+## 自定义配置
+```
+- menu icon缺少图标 w-jzc-icon-hidden、
+```
+
 ## 介绍
 
 **wangEditor** —— 轻量级 web 富文本编辑器，配置方便，使用简单。支持 IE10+ 浏览器。
