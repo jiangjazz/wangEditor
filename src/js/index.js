@@ -1,6 +1,5 @@
 import polyfill from './util/poly-fill.js'
 import Editor from './editor/index.js'
-
 // 检验是否浏览器环境
 try {
     document

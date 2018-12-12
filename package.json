@@ -1,29 +1,22 @@
 {
-  "name": "wangeditor",
-  "title": "wangEditor",
-  "version": "3.1.0",
-  "description": "wangEditor - 基于javascript和css开发的 web 富文本编辑器， 轻量、简洁、易用、开源免费",
+  "name": "wangeditor_modify",
+  "title": "wangeditor_modify",
+  "version": "1.0.3",
+  "description": "基于wangEditor修改的富文本编辑器，自用",
   "homepage": "http://wangeditor.github.io/",
-  "author": {
-    "name": "wangfupeng1988",
-    "url": "https://github.com/wangfupeng1988"
-  },
+  "author": "wangfupeng1988 ",
   "keywords": [
     "wangEditor",
     "web 富文本编辑器"
   ],
   "main": "release/wangEditor.js",
   "maintainers": [
-    {
-      "name": "wangfupeng1988",
-      "web": "http://www.cnblogs.com/wangfupeng1988/default.html?OnlyTitle=1",
-      "mail": "wangfupeng1988@163.com"
-    }
+    "wangfupeng1988 <wangfupeng1988@163.com> (http://www.cnblogs.com/wangfupeng1988/default.html?OnlyTitle=1)"
   ],
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/wangfupeng1988/wangEditor"
+      "url": "git+https://github.com/wangfupeng1988/wangEditor.git"
     }
   ],
   "scripts": {
@@ -56,5 +49,16 @@
     "rollup-plugin-eslint": "^3.0.0",
     "rollup-plugin-node-resolve": "^3.0.0"
   },
-  "dependencies": {}
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wangfupeng1988/wangEditor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wangfupeng1988/wangEditor/issues"
+  },
+  "directories": {
+    "doc": "docs",
+    "example": "example"
+  },
+  "license": "ISC"
 }

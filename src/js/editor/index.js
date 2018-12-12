@@ -29,6 +29,8 @@ function Editor(toolbarSelector, textSelector) {
 
     // 自定义配置
     this.customConfig = {}
+    // 原作者修改了原始Image构造函数 emmmm     add by jzc
+    this.oldImage = Image
 }
 
 // 修改原型

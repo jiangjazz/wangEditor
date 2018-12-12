@@ -2644,8 +2644,29 @@ Video.prototype = {
 /*
     menu - img
 */
+if (!HTMLCanvasElement.prototype.toBlob) {
+    Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+        value: function value(callback, type, quality) {
+            var canvas = this;
+            setTimeout(function () {
+                var binStr = atob(canvas.toDataURL(type, quality).split(',')[1]);
+                var len = binStr.length;
+                var arr = new Uint8Array(len);
+
+                for (var i = 0; i < len; i++) {
+                    arr[i] = binStr.charCodeAt(i);
+                }
+
+                callback(new Blob([arr], {
+                    type: type || 'image/png'
+                }));
+            });
+        }
+    });
+}
+
 // 构造函数
-function Image(editor) {
+function Image$1(editor) {
     this.editor = editor;
     var imgMenuId = getRandom('w-e-img');
     this.$elem = $('<div class="w-e-menu" id="' + imgMenuId + '"><i class="w-e-icon-image"><i/></div>');
@@ -2654,11 +2675,14 @@ function Image(editor) {
 
     // 当前是否 active 状态
     this._active = false;
+    // 是否要压缩 add by jzc
+    this._compress = false;
+    this._percentages = 0.8; // 压缩百分比
 }
 
 // 原型
-Image.prototype = {
-    constructor: Image,
+Image$1.prototype = {
+    constructor: Image$1,
 
     onClick: function onClick() {
         var editor = this.editor;
@@ -2745,12 +2769,16 @@ Image.prototype = {
     },
 
     _createInsertPanel: function _createInsertPanel() {
+        var _this2 = this;
+
         var editor = this.editor;
         var uploadImg = editor.uploadImg;
         var config = editor.config;
 
         // id
         var upTriggerId = getRandom('up-trigger');
+        var compressImg = getRandom('up-compress'); // update by jzc
+        var compressCanvas = getRandom('up-canvas'); // update by jzc
         var upFileId = getRandom('up-file');
         var linkUrlId = getRandom('link-url');
         var linkBtnId = getRandom('link-btn');
@@ -2758,7 +2786,7 @@ Image.prototype = {
         // tabs 的配置
         var tabsConfig = [{
             title: '上传图片',
-            tpl: '<div class="w-e-up-img-container">\n                    <div id="' + upTriggerId + '" class="w-e-up-btn">\n                        <i class="w-e-icon-upload2"></i>\n                    </div>\n                    <div style="display:none;">\n                        <input id="' + upFileId + '" type="file" multiple="multiple" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp"/>\n                    </div>\n                </div>',
+            tpl: '<div class="w-e-up-img-container">\n                    <div id="' + upTriggerId + '" class="w-e-up-btn">\n                        <i class="w-e-icon-upload2"></i>\n                    </div>\n                    <label class="w-jzc-compress">\n                        <input id="' + compressImg + '" type="checkbox" />\n                        \u662F\u5426\u8981\u538B\u7F29\n\t\t\t\t\t          </label>\n                    <canvas style="display:none;" id="' + compressCanvas + '">\n                    </canvas>\n                    <div style="display:none;">\n                        <input id="' + upFileId + '" type="file" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp"/>\n                    </div>\n                </div>',
             events: [{
                 // 触发选择图片
                 selector: '#' + upTriggerId,
@@ -2771,6 +2799,22 @@ Image.prototype = {
                     } else {
                         // 返回 true 可关闭 panel
                         return true;
+                    }
+                }
+            }, {
+                // 选择压缩图片 add by jzc
+                selector: '#' + compressImg,
+                type: 'click',
+                fn: function fn() {
+                    var $checkbox = $('#' + compressImg);
+                    var checkboxElem = $checkbox[0];
+                    if (checkboxElem.checked) {
+                        console.log('压缩');
+                        _this2._compress = true;
+                    } else {
+                        // 返回 true 可关闭 panel
+                        console.log('不压缩');
+                        _this2._compress = false;
                     }
                 }
             }, {
@@ -2787,12 +2831,47 @@ Image.prototype = {
 
                     // 获取选中的 file 对象列表
                     var fileList = fileElem.files;
-                    if (fileList.length) {
-                        uploadImg.uploadImg(fileList);
-                    }
+                    var reader = new FileReader();
+                    var _this = _this2;
+                    var imageName = fileList[0].name;
+                    console.log(fileList, imageName);
+                    var isPng = /png/gi.test(fileList[0].type);
+                    reader.addEventListener('loadend', function (arg) {
+                        var src_image = new _this.editor.oldImage();
+                        var canvas = $('#' + compressCanvas)[0];
+                        var ctx = canvas.getContext('2d');
+
+                        src_image.crossOrigin = 'Anonymous'; //cors support
+                        src_image.onload = function () {
+                            var img_w = src_image.width;
+                            var img_h = src_image.height;
+                            canvas.width = img_w;
+                            canvas.height = img_h;
+                            ctx.clearRect(0, 0, img_w, img_h);
+                            if (!isPng) {
+                                ctx.fillStyle = '#ffffff';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            }
+                            ctx.drawImage(src_image, 0, 0);
+                            canvas.toBlob(function (blob) {
+                                var newFiles = new File([blob], imageName, { type: 'image/png' });
+                                // fileList[0] = newFiles
+                                uploadImg.uploadImg([newFiles]);
+                                console.log(newFiles);
+                            }, isPng ? 'image/png' : 'image/jpeg', _this._percentages);
+                        };
+                        src_image.src = this.result;
+                    });
+                    // reader.onload = function () {
+                    // }
+                    reader.readAsDataURL(fileList[0]);
+
+                    // if (fileList.length) {
+                    //     uploadImg.uploadImg(fileList)
+                    // }
 
                     // 返回 true 可关闭 panel
-                    return true;
+                    // return true
                 }
             }]
         }, // first tab end
@@ -2971,7 +3050,7 @@ MenuConstructors.table = Table;
 
 MenuConstructors.video = Video;
 
-MenuConstructors.image = Image;
+MenuConstructors.image = Image$1;
 
 // jzc
 MenuConstructors.enclosure = Enclosure;
@@ -4444,6 +4523,8 @@ function Editor(toolbarSelector, textSelector) {
 
     // 自定义配置
     this.customConfig = {};
+    // 原作者修改了原始Image构造函数 emmmm     add by jzc
+    this.oldImage = Image;
 }
 
 // 修改原型

@@ -5,6 +5,28 @@ import $ from '../../util/dom-core.js'
 import { getRandom, arrForEach } from '../../util/util.js'
 import Panel from '../panel.js'
 
+if (!HTMLCanvasElement.prototype.toBlob) {
+    Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+        value: function (callback, type, quality) {
+            var canvas = this
+            setTimeout(function () {
+                var binStr = atob(canvas.toDataURL(type, quality).split(',')[1])
+                var len = binStr.length
+                var arr = new Uint8Array(len)
+
+                for (var i = 0; i < len; i++) {
+                    arr[i] = binStr.charCodeAt(i)
+                }
+
+                callback(new Blob([arr], {
+                    type: type || 'image/png'
+                }))
+
+            })
+        }
+    })
+}
+
 // 构造函数
 function Image(editor) {
     this.editor = editor
@@ -15,6 +37,9 @@ function Image(editor) {
 
     // 当前是否 active 状态
     this._active = false
+    // 是否要压缩 add by jzc
+    this._compress = false
+    this._percentages = 0.8 // 压缩百分比
 }
 
 // 原型
@@ -129,6 +154,8 @@ Image.prototype = {
 
         // id
         const upTriggerId = getRandom('up-trigger')
+        const compressImg = getRandom('up-compress') // update by jzc
+        const compressCanvas = getRandom('up-canvas') // update by jzc
         const upFileId = getRandom('up-file')
         const linkUrlId = getRandom('link-url')
         const linkBtnId = getRandom('link-btn')
@@ -141,8 +168,14 @@ Image.prototype = {
                     <div id="${upTriggerId}" class="w-e-up-btn">
                         <i class="w-e-icon-upload2"></i>
                     </div>
+                    <label class="w-jzc-compress">
+                        <input id="${compressImg}" type="checkbox" />
+                        是否要压缩
+					          </label>
+                    <canvas style="display:none;" id="${compressCanvas}">
+                    </canvas>
                     <div style="display:none;">
-                        <input id="${upFileId}" type="file" multiple="multiple" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp"/>
+                        <input id="${upFileId}" type="file" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp"/>
                     </div>
                 </div>`,
                 events: [
@@ -162,6 +195,23 @@ Image.prototype = {
                         }
                     },
                     {
+                        // 选择压缩图片 add by jzc
+                        selector: '#' + compressImg,
+                        type: 'click',
+                        fn: () => {
+                            const $checkbox = $('#' + compressImg)
+                            const checkboxElem = $checkbox[0]
+                            if (checkboxElem.checked) {
+                                console.log('压缩')
+                                this._compress = true
+                            } else {
+                                // 返回 true 可关闭 panel
+                                console.log('不压缩')
+                                this._compress = false
+                            }
+                        }
+                    },
+                    {
                         // 选择图片完毕
                         selector: '#' + upFileId,
                         type: 'change',
@@ -172,15 +222,51 @@ Image.prototype = {
                                 // 返回 true 可关闭 panel
                                 return true
                             }
-
+                            
                             // 获取选中的 file 对象列表
-                            const fileList = fileElem.files
-                            if (fileList.length) {
-                                uploadImg.uploadImg(fileList)
-                            }
+                            let fileList = fileElem.files
+                            let reader = new FileReader()
+                            let _this = this
+                            let imageName = fileList[0].name
+                            console.log(fileList, imageName)
+                            let isPng = /png/gi.test(fileList[0].type)
+                            reader.addEventListener('loadend', function(arg) {
+                                let src_image = new _this.editor.oldImage()
+                                let canvas = $('#' + compressCanvas)[0]
+                                let ctx = canvas.getContext('2d')
+
+                                src_image.crossOrigin = 'Anonymous' //cors support
+                                src_image.onload = function(){
+                                    let img_w = src_image.width
+                                    let img_h = src_image.height
+                                    canvas.width = img_w
+                                    canvas.height = img_h
+                                    ctx.clearRect(0, 0, img_w, img_h)
+                                    if(!isPng) {
+                                        ctx.fillStyle = '#ffffff'
+                                        ctx.fillRect(0, 0, canvas.width, canvas.height)
+                                    }
+                                    ctx.drawImage(src_image, 0, 0)
+                                    canvas.toBlob(function(blob){
+                                        let newFiles = new File([blob], imageName, {type: 'image/png'})
+                                        // fileList[0] = newFiles
+                                        uploadImg.uploadImg([newFiles])
+                                        console.log(newFiles)
+                                    }, isPng ? 'image/png': 'image/jpeg', _this._percentages)
+                                }
+                                src_image.src = this.result
+                            })
+                            // reader.onload = function () {
+                            // }
+                            reader.readAsDataURL(fileList[0])
+
+
+                            // if (fileList.length) {
+                            //     uploadImg.uploadImg(fileList)
+                            // }
 
                             // 返回 true 可关闭 panel
-                            return true
+                            // return true
                         }
                     }
                 ]
