@@ -1,24 +1,12 @@
 {
   "name": "wangeditor_modify",
-  "title": "wangeditor_modify",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "基于wangEditor修改的富文本编辑器，自用",
-  "homepage": "http://wangeditor.github.io/",
-  "author": "wangfupeng1988 ",
-  "keywords": [
-    "wangEditor",
-    "web 富文本编辑器"
-  ],
   "main": "release/wangEditor.js",
-  "maintainers": [
-    "wangfupeng1988 <wangfupeng1988@163.com> (http://www.cnblogs.com/wangfupeng1988/default.html?OnlyTitle=1)"
-  ],
-  "repositories": [
-    {
-      "type": "git",
-      "url": "git+https://github.com/wangfupeng1988/wangEditor.git"
-    }
-  ],
+  "directories": {
+    "doc": "docs",
+    "example": "example"
+  },
   "scripts": {
     "release": "gulp",
     "win-example": "node ./example/server/index.js",
@@ -51,14 +39,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wangfupeng1988/wangEditor.git"
+    "url": "git+https://github.com/jiangjazz/wangEditor.git"
   },
+  "keywords": [
+    "wangeditor",
+    "modify"
+  ],
+  "author": "wangfupeng1988 jzc",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wangfupeng1988/wangEditor/issues"
+    "url": "https://github.com/jiangjazz/wangEditor/issues"
   },
-  "directories": {
-    "doc": "docs",
-    "example": "example"
-  },
-  "license": "ISC"
+  "homepage": "https://github.com/jiangjazz/wangEditor#readme"
 }
