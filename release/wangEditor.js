@@ -2831,47 +2831,54 @@ Image$1.prototype = {
 
                     // 获取选中的 file 对象列表
                     var fileList = fileElem.files;
-                    var reader = new FileReader();
-                    var _this = _this2;
-                    var imageName = fileList[0].name;
-                    console.log(fileList, imageName);
-                    var isPng = /png/gi.test(fileList[0].type);
-                    reader.addEventListener('loadend', function (arg) {
-                        var src_image = new _this.editor.oldImage();
-                        var canvas = $('#' + compressCanvas)[0];
-                        var ctx = canvas.getContext('2d');
+                    if (fileList.length) {
+                        if (_this2._compress) {
+                            var canvas = $('#' + compressCanvas)[0];
+                            var ctx = canvas.getContext('2d');
+                            // 选择压缩执行
+                            try {
+                                var reader = new FileReader();
+                                var _this = _this2;
+                                var imageName = fileList[0].name;
+                                console.log(fileList, imageName);
+                                var isPng = /png/gi.test(fileList[0].type);
+                                reader.onload = function (arg) {
+                                    var src_image = new _this.editor.oldImage();
 
-                        src_image.crossOrigin = 'Anonymous'; //cors support
-                        src_image.onload = function () {
-                            var img_w = src_image.width;
-                            var img_h = src_image.height;
-                            canvas.width = img_w;
-                            canvas.height = img_h;
-                            ctx.clearRect(0, 0, img_w, img_h);
-                            if (!isPng) {
-                                ctx.fillStyle = '#ffffff';
-                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                    src_image.crossOrigin = 'Anonymous'; //cors support
+                                    src_image.onload = function () {
+                                        var img_w = src_image.width;
+                                        var img_h = src_image.height;
+                                        canvas.width = img_w;
+                                        canvas.height = img_h;
+                                        ctx.clearRect(0, 0, img_w, img_h);
+                                        if (!isPng) {
+                                            ctx.fillStyle = '#ffffff';
+                                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                        }
+                                        ctx.drawImage(src_image, 0, 0);
+                                        canvas.toBlob(function (blob) {
+                                            var newFiles = new File([blob], imageName, { type: 'image/png' });
+                                            // fileList[0] = newFiles
+                                            uploadImg.uploadImg([newFiles]);
+                                            console.log(newFiles);
+                                        }, isPng ? 'image/png' : 'image/jpeg', _this._percentages);
+                                    };
+                                    src_image.src = this.result;
+                                };
+                                reader.readAsDataURL(fileList[0]);
+                            } catch (error) {
+                                // 如皋不支持压缩则执行
+                                uploadImg.uploadImg(fileList);
                             }
-                            ctx.drawImage(src_image, 0, 0);
-                            canvas.toBlob(function (blob) {
-                                var newFiles = new File([blob], imageName, { type: 'image/png' });
-                                // fileList[0] = newFiles
-                                uploadImg.uploadImg([newFiles]);
-                                console.log(newFiles);
-                            }, isPng ? 'image/png' : 'image/jpeg', _this._percentages);
-                        };
-                        src_image.src = this.result;
-                    });
-                    // reader.onload = function () {
-                    // }
-                    reader.readAsDataURL(fileList[0]);
-
-                    // if (fileList.length) {
-                    //     uploadImg.uploadImg(fileList)
-                    // }
+                        } else {
+                            // 没选择压缩执行
+                            uploadImg.uploadImg(fileList);
+                        }
+                    }
 
                     // 返回 true 可关闭 panel
-                    // return true
+                    return true;
                 }
             }]
         }, // first tab end
@@ -2912,6 +2919,10 @@ Image$1.prototype = {
             tabs: tabsConfigResult
         });
         panel.show();
+        // 初始化压缩选项 add by jzc
+        var $checkCompress = $('#' + compressImg);
+        var checkCompress = $checkCompress[0];
+        checkCompress.checked = this._compress;
 
         // 记录属性
         this.panel = panel;

@@ -225,48 +225,54 @@ Image.prototype = {
                             
                             // 获取选中的 file 对象列表
                             let fileList = fileElem.files
-                            let reader = new FileReader()
-                            let _this = this
-                            let imageName = fileList[0].name
-                            console.log(fileList, imageName)
-                            let isPng = /png/gi.test(fileList[0].type)
-                            reader.addEventListener('loadend', function(arg) {
-                                let src_image = new _this.editor.oldImage()
-                                let canvas = $('#' + compressCanvas)[0]
-                                let ctx = canvas.getContext('2d')
+                            if (fileList.length) {
+                                if (this._compress) {
+                                    let canvas = $('#' + compressCanvas)[0]
+                                    let ctx = canvas.getContext('2d')
+                                    // 选择压缩执行
+                                    try {
+                                        let reader = new FileReader()
+                                        let _this = this
+                                        let imageName = fileList[0].name
+                                        console.log(fileList, imageName)
+                                        let isPng = /png/gi.test(fileList[0].type)
+                                        reader.onload = function(arg) {
+                                            let src_image = new _this.editor.oldImage()
 
-                                src_image.crossOrigin = 'Anonymous' //cors support
-                                src_image.onload = function(){
-                                    let img_w = src_image.width
-                                    let img_h = src_image.height
-                                    canvas.width = img_w
-                                    canvas.height = img_h
-                                    ctx.clearRect(0, 0, img_w, img_h)
-                                    if(!isPng) {
-                                        ctx.fillStyle = '#ffffff'
-                                        ctx.fillRect(0, 0, canvas.width, canvas.height)
+                                            src_image.crossOrigin = 'Anonymous' //cors support
+                                            src_image.onload = function(){
+                                                let img_w = src_image.width
+                                                let img_h = src_image.height
+                                                canvas.width = img_w
+                                                canvas.height = img_h
+                                                ctx.clearRect(0, 0, img_w, img_h)
+                                                if(!isPng) {
+                                                    ctx.fillStyle = '#ffffff'
+                                                    ctx.fillRect(0, 0, canvas.width, canvas.height)
+                                                }
+                                                ctx.drawImage(src_image, 0, 0)
+                                                canvas.toBlob(function(blob){
+                                                    let newFiles = new File([blob], imageName, {type: 'image/png'})
+                                                    // fileList[0] = newFiles
+                                                    uploadImg.uploadImg([newFiles])
+                                                    console.log(newFiles)
+                                                }, isPng ? 'image/png': 'image/jpeg', _this._percentages)
+                                            }
+                                            src_image.src = this.result
+                                        }
+                                        reader.readAsDataURL(fileList[0])
+                                    } catch (error) {
+                                        // 如皋不支持压缩则执行
+                                        uploadImg.uploadImg(fileList)
                                     }
-                                    ctx.drawImage(src_image, 0, 0)
-                                    canvas.toBlob(function(blob){
-                                        let newFiles = new File([blob], imageName, {type: 'image/png'})
-                                        // fileList[0] = newFiles
-                                        uploadImg.uploadImg([newFiles])
-                                        console.log(newFiles)
-                                    }, isPng ? 'image/png': 'image/jpeg', _this._percentages)
+                                } else {
+                                    // 没选择压缩执行
+                                    uploadImg.uploadImg(fileList)
                                 }
-                                src_image.src = this.result
-                            })
-                            // reader.onload = function () {
-                            // }
-                            reader.readAsDataURL(fileList[0])
-
-
-                            // if (fileList.length) {
-                            //     uploadImg.uploadImg(fileList)
-                            // }
-
+                            }
+                            
                             // 返回 true 可关闭 panel
-                            // return true
+                            return true
                         }
                     }
                 ]
@@ -316,6 +322,10 @@ Image.prototype = {
             tabs: tabsConfigResult
         })
         panel.show()
+        // 初始化压缩选项 add by jzc
+        const $checkCompress = $('#' + compressImg)
+        const checkCompress = $checkCompress[0]
+        checkCompress.checked = this._compress
 
         // 记录属性
         this.panel = panel
