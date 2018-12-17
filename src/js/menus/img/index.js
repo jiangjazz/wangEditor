@@ -38,8 +38,8 @@ function Image(editor) {
     // 当前是否 active 状态
     this._active = false
     // 是否要压缩 add by jzc
-    this._compress = false
-    this._percentages = 0.8 // 压缩百分比
+    this._compress = true
+    this._percentages = this.editor.config.uploadCompress // 压缩百分比
 }
 
 // 原型
@@ -165,19 +165,22 @@ Image.prototype = {
             {
                 title: '上传图片',
                 tpl: `<div class="w-e-up-img-container">
-                    <div id="${upTriggerId}" class="w-e-up-btn">
-                        <i class="w-e-icon-upload2"></i>
+                    <div>
+                      <label class="w-jzc-compress">
+                          <input id="${compressImg}" type="checkbox" />
+                          Upload original image
+                      </label>
                     </div>
-                    <label class="w-jzc-compress">
-                        <input id="${compressImg}" type="checkbox" />
-                        是否要压缩
-					          </label>
+                    <div id="${upTriggerId}" class="w-e-up-btn">
+                      Upload
+                    </div>
                     <canvas style="display:none;" id="${compressCanvas}">
                     </canvas>
                     <div style="display:none;">
                         <input id="${upFileId}" type="file" accept="image/jpg,image/jpeg,image/png,image/gif,image/bmp"/>
                     </div>
                 </div>`,
+                // <i class="w-e-icon-upload2"></i>
                 events: [
                     {
                         // 触发选择图片

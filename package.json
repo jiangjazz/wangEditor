@@ -1,6 +1,6 @@
 {
   "name": "wangeditor_modify",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "基于wangEditor修改的富文本编辑器，自用",
   "main": "release/wangEditor.js",
   "directories": {
@@ -23,19 +23,19 @@
     "gulp-cssmin": "^0.1.7",
     "gulp-less": "^3.3.0",
     "gulp-postcss": "^6.4.0",
-    "gulp-rename": "^1.2.2",
+    "gulp-rename": "^1.4.0",
     "gulp-replace": "^0.5.4",
     "gulp-sourcemaps": "^2.5.0",
     "gulp-uglify": "^2.1.2",
-    "koa": "^1.2.4",
+    "koa": "^1.6.2",
     "koa-bodyparser": "^2.3.0",
     "koa-onerror": "^3.1.0",
     "koa-router": "^5.4.0",
-    "koa-static-cache": "^4.0.0",
+    "koa-static-cache": "^4.1.2",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-eslint": "^3.0.0",
-    "rollup-plugin-node-resolve": "^3.0.0"
+    "rollup-plugin-node-resolve": "^3.4.0"
   },
   "repository": {
     "type": "git",
