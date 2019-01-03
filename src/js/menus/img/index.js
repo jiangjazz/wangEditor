@@ -198,19 +198,19 @@ Image.prototype = {
                         }
                     },
                     {
-                        // 选择压缩图片 add by jzc
+                        // 选择是否上传原图 add by jzc
                         selector: '#' + compressImg,
                         type: 'click',
                         fn: () => {
                             const $checkbox = $('#' + compressImg)
                             const checkboxElem = $checkbox[0]
                             if (checkboxElem.checked) {
-                                console.log('压缩')
-                                this._compress = true
+                                console.log('上传 原图')
+                                this._compress = false
                             } else {
                                 // 返回 true 可关闭 panel
-                                console.log('不压缩')
-                                this._compress = false
+                                console.log('上传 压缩')
+                                this._compress = true
                             }
                         }
                     },
@@ -237,7 +237,7 @@ Image.prototype = {
                                         let reader = new FileReader()
                                         let _this = this
                                         let imageName = fileList[0].name
-                                        console.log(fileList, imageName)
+                                        console.log(fileList[0], imageName)
                                         let isPng = /png/gi.test(fileList[0].type)
                                         reader.onload = function(arg) {
                                             let src_image = new _this.editor.oldImage()
@@ -270,6 +270,7 @@ Image.prototype = {
                                     }
                                 } else {
                                     // 没选择压缩执行
+                                    console.log(fileList[0])
                                     uploadImg.uploadImg(fileList)
                                 }
                             }
@@ -328,7 +329,7 @@ Image.prototype = {
         // 初始化压缩选项 add by jzc
         const $checkCompress = $('#' + compressImg)
         const checkCompress = $checkCompress[0]
-        checkCompress.checked = this._compress
+        checkCompress.checked = !this._compress
 
         // 记录属性
         this.panel = panel

@@ -2806,19 +2806,19 @@ Image$1.prototype = {
                     }
                 }
             }, {
-                // 选择压缩图片 add by jzc
+                // 选择是否上传原图 add by jzc
                 selector: '#' + compressImg,
                 type: 'click',
                 fn: function fn() {
                     var $checkbox = $('#' + compressImg);
                     var checkboxElem = $checkbox[0];
                     if (checkboxElem.checked) {
-                        console.log('压缩');
-                        _this2._compress = true;
+                        console.log('上传 原图');
+                        _this2._compress = false;
                     } else {
                         // 返回 true 可关闭 panel
-                        console.log('不压缩');
-                        _this2._compress = false;
+                        console.log('上传 压缩');
+                        _this2._compress = true;
                     }
                 }
             }, {
@@ -2844,7 +2844,7 @@ Image$1.prototype = {
                                 var reader = new FileReader();
                                 var _this = _this2;
                                 var imageName = fileList[0].name;
-                                console.log(fileList, imageName);
+                                console.log(fileList[0], imageName);
                                 var isPng = /png/gi.test(fileList[0].type);
                                 reader.onload = function (arg) {
                                     var src_image = new _this.editor.oldImage();
@@ -2877,6 +2877,7 @@ Image$1.prototype = {
                             }
                         } else {
                             // 没选择压缩执行
+                            console.log(fileList[0]);
                             uploadImg.uploadImg(fileList);
                         }
                     }
@@ -2926,7 +2927,7 @@ Image$1.prototype = {
         // 初始化压缩选项 add by jzc
         var $checkCompress = $('#' + compressImg);
         var checkCompress = $checkCompress[0];
-        checkCompress.checked = this._compress;
+        checkCompress.checked = !this._compress;
 
         // 记录属性
         this.panel = panel;
