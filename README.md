@@ -3,6 +3,9 @@
 
 ## 修改
 ```
+m1.2.2
+修改
+- 表情包标题栏超出长度可以横向滑动
 m1.2.1
 修改
 - 上传图片压缩选项依据文案修改为是否上传原图，并修改逻辑
@@ -44,6 +47,7 @@ editor.create()
 
 - 安装或者升级最新版本 node（最低`v6.x.x`）
 - 进入目录，安装依赖包 `cd wangEditor && npm i`
+- 开发模式运行 `npm run release`
 - 安装包完成之后，windows 用户运行`npm run win-example`，Mac 用户运行`npm run example`
 - 打开浏览器访问[localhost:3000/index.html](http://localhost:3000/index.html)
 - 用于 React、vue 或者 angular 可查阅[文档](http://www.kancloud.cn/wangfupeng/wangeditor3/332599)中[其他](https://www.kancloud.cn/wangfupeng/wangeditor3/335783)章节中的相关介绍
